@@ -11,7 +11,7 @@ Images are built via [Travis CI](https://travis-ci.org/t3ctechnologies/centos) a
 
 | centos version (Dockerfile) | Centos Linux version |
 | ---------------------------- | -------------------- |
-| [3.2](https://github.com/t3ctechnologies/centos/tree/master/3.2/Dockerfile) | Centos latest 7 |
+| [7](https://github.com/t3ctechnologies/centos/tree/master/7/Dockerfile) | Centos latest 7 |
 
 ## Environment Variables
 
