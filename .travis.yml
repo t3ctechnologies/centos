@@ -1,0 +1,28 @@
+language: python
+services:
+- docker
+env:
+  global:
+  - LATEST_VERSION=7
+  - secure: We6yWPPiOoc5FTKatXQZ1+oJ6QkEHCHGPlM+Tyons2XGHzeUVO7XMJVABHsVjm7KWckDRtjB3gwMGIUytrDbRreMcYZjArbkW0/MCxrszWg0r0KP1L6XTj//WyhavVIdopnjStwuvlyO06wfL1tLJwW4Cb/R1ukVBPoiurlIGEyeldgRwJ6EGXL44eGTmvtWqzQCnnDbRSVrC5/M2ZRu/9EWdkNog9g0ETAo4qxetRXyB6sJt9HNG09SZ5a57EE2GjVhohqnCHWahuz4ilfuqPWSMBhXqVH/B2pxVp1I6OMdjMcCtuh/mEAGcbny5CFsLfpOvd7FlO0BHrJNSJAgKSzeyWwEsMHYXAPeMlN9XCM9Aq5JXqotW+epxm3meJxPUVjetKcY4zxf0AiN4bIGvQXiG5wF8hOyu2YA9Oyrnnkxwt8CA1y8iVdjN2TIBaA1JVNu316X+RYekCeJt0B00a+wAbmCOXPofY/4DE7HWuN8w9IS4XHSOsbgV4YFt9gA+RpdCBN4CIOY8I0M2zTuI0nl4PK84m90xgfOIYtBw913SGQZXTKFoaRBYJ5AA91K/HrrEKznU8XFGAy4kegjd/6B3cLwGaV621hyZDJk3IBZdRIWi3K+57hOMy5pahyxvYdFbNWPb827AupnuzTZZoaLYXN2/Mr7fzXgBRhbs1k=
+  - secure: fTkSkRoUTchlDF9Uiit/om/TFN6y9yRStTVL18qdq76n9Ggg0lsGD7MbZVm7kbW04OcOscVYb6cgFezN9GU7LC4NPnwakDjyCRIF7VN7hRyL3OOHYjAEemPyRX4jkDrHtRyd1hbgu0JkXd7DR3OaRiIIPRXJwX0n/LSGjABPSj/fLAq5cYO2itlKY8i8AQn68J2XiWEHDy8F8UWekKOi2QcbeYak5+Sx3G8UUynUAtKt1S3kQP9HhXivdVi5QR3qKJ9mRWOr9zGBqmdNyX7Ks35uA49yCl51G/nxHUlMxk+ISVnVwSzFSIT2APwwQ71/PTXoPp74rVRxM5gR4zavyuY9MMdhcQzBv3KKhhpMDfLR5Lw7sDDdjUwuYo7iOZULLIlfkFjhicgNlRGWhz0uMwWBw0mbTRHC1NGL1zEaV9FS7RyK5UhT2BzmG1bVeQ55EI2vSduR1Sufe5LOWcjmScfehv9F6XvnxFcKjxs1w6SS1HhxMMmP8/oYsyzncKc8hMteLbN+RCx87m5oPRqgKmxqauJWviPOKj9LExhzk/kYmGM3/SVKXtJLG3wiLGsAg8udQFPaamUuxdRBuMrVJwu7A8wTi4SBC87H8QNC+S6QT93ExcgJKrcT0rveZURAqg56zvWUZNYXr0zSFmN0kB8OZyHLlnCf40OYUrCakzE=
+  matrix:
+  - VERSION=7
+script:
+- cd ./$VERSION
+- make && make test
+after_success: |
+  if [ "$TRAVIS_PULL_REQUEST" == "false" ] && ([ "$TRAVIS_BRANCH" == "master" ] || [ -n "$TRAVIS_TAG" ]); then
+    docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    make release
+
+    if [ -n "$TRAVIS_TAG" ]; then
+      make VERSION="$VERSION-$TRAVIS_TAG" release
+    fi
+
+    if [ "$VERSION" == "$LATEST_VERSION" ]; then
+      make VERSION=latest release
+    fi
+  fi
+after_failure:
+- make logs
