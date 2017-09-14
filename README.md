@@ -32,5 +32,5 @@ make COMMAND [params ...]
 ```
 
 ## Deployment
-
+ This can be run standalone or as part of a docker compose
 Deploy centos container to your own server via [![t3ctechnologies](https://www.google.com/s2/favicons?domain=t3ctechnologies.com) t3ctechnologies](http://t3c.io).
